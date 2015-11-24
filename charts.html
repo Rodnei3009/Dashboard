@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="myApp">
 <head>
   <title>Bootstrap Case</title>
   <meta charset="utf-8">
   
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
+    
+    <script src="assets/js/angular.min.js"></script>
     
     <script src="js/jquery.min.js"></script>
     
@@ -27,6 +29,10 @@
     <!-- Bootstrap Core CSS -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.2.3/firebase.js"></script>	
+    <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
+
 
 
 </head>
@@ -53,7 +59,7 @@
 
 
     
-        <div class="col-sm-4">
+        <div class="col-sm-4" ng-controller="dashitems">
 				
             <div class="xe-widget xe-counter-block" data-count=".num" data-from="0" data-to="99.9" data-suffix="%" data-duration="2">
                 <div class="xe-upper">
@@ -62,8 +68,8 @@
                         <i class="linecons-cloud"></i>
                     </div>
                     <div class="xe-label">
-                        <strong class="num">0.0%</strong>
-                        <span>Server uptime</span>
+                        <strong class="num">{{sla}}</strong>
+                        <span>SLA no prazo</span>
                     </div>
 
                 </div>
@@ -287,6 +293,26 @@
             </div>
         </div>
         
+        <script>			
+            var myApp = angular.module('myApp',[]);
+    
+            myApp.controller('dashitems', ['$scope', function($scope) {
+                $scope.sla="888";
+                $scope.produtos={};
+           	
+				myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/");
+				myData.on('value', function(snapshot){
+                    $scope.produtos = [];
+					snapshot.forEach(function(childSnapshot) {
+						alert(childSnapshot.child('sla').val());
+                        $scope.sla=childSnapshot.child('sla').val();
+                        //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
+					});
+					$scope.$apply();				
+				});
+            }]);            
+        </script>
+    
     
         <script type="text/javascript">
             jQuery(document).ready(function($)
