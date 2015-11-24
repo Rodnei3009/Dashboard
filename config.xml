@@ -75,7 +75,10 @@
 
     <!-- Define app splash screen for each platform. -->
     <gap:splash src="images/icon.png"       gap:platform="android" gap:qualifier="port-ldpi" />
-
+    
+    <gap:splash src="images/icon.png"       gap:platform="ios"     width="256" height="256" />
+    
+    
     <gap:config-file platform="ios" parent="CFBundleShortVersionString">
     <string>100</string>
     </gap:config-file>
