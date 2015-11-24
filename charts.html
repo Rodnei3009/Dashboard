@@ -304,7 +304,7 @@
 				myData.on('value', function(snapshot){
                     $scope.produtos = [];
 					snapshot.forEach(function(childSnapshot) {
-						alert(childSnapshot.child('sla').val());
+						//alert(childSnapshot.child('sla').val());
                         $scope.sla=childSnapshot.child('sla').val();
                         //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
 					});
