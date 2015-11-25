@@ -33,7 +33,46 @@
     <script src="https://cdn.firebase.com/js/client/2.2.3/firebase.js"></script>	
     <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
 
-
+    <style>
+        .preloader1 {
+           width:40px;
+           height:40px;
+           display:inline-block;
+           padding:0px;
+           text-align:left;
+           -webkit-animation:preloader1 1.4s linear infinite;
+           animation:preloader1 1.4s linear infinite;
+        }
+        .preloader1 span {
+           position:absolute;
+           vertical-align:middle;
+           border-radius:100%;
+           background:#000000;
+           display:inline-block;
+           width:8px;
+           height:8px;
+           margin-left:16px;
+           transform-origin:center 20px;
+           -webkit-transform-origin:center 20px;
+        }
+        .preloader1 span:nth-child(2) {transform: rotate(36deg);-webkit-transform: rotate(36deg); opacity:0.1;}
+        .preloader1 span:nth-child(3) {transform: rotate(72deg);-webkit-transform: rotate(72deg); opacity:0.2;}
+        .preloader1 span:nth-child(4) {transform: rotate(108deg);-webkit-transform: rotate(108deg); opacity:0.3;}
+        .preloader1 span:nth-child(5) {transform: rotate(144deg);-webkit-transform: rotate(144deg); opacity:0.4;}
+        .preloader1 span:nth-child(6) {transform: rotate(180deg);-webkit-transform: rotate(180deg); opacity:0.5;}
+        .preloader1 span:nth-child(7) {transform: rotate(216deg);-webkit-transform: rotate(216deg); opacity:0.6;}
+        .preloader1 span:nth-child(8) {transform: rotate(252deg);-webkit-transform: rotate(252deg); opacity:0.7;}
+        .preloader1 span:nth-child(9) {transform: rotate(288deg);-webkit-transform: rotate(288deg); opacity:0.8;}
+        .preloader1 span:nth-child(10) {transform: rotate(324deg);-webkit-transform: rotate(324deg); opacity:0.9;}
+        @keyframes preloader1 {
+           from {transform: rotate(0deg);}
+           to {transform: rotate(360deg);}
+        }
+        @-webkit-keyframes preloader1 {
+           from {-webkit-transform: rotate(0deg);}
+           to {-webkit-transform: rotate(360deg);}
+        }
+    </style>
 
 </head>
 <body>
@@ -57,12 +96,23 @@
             </div>
           </div>
         </nav>
-
-
     
         <div class="col-sm-4" ng-controller="dashitems">
-				
-            <div class="xe-widget xe-counter-block" data-count=".num" data-from="0" data-to="99.9" data-suffix="%" data-duration="2">
+            
+            <div ng-show="carregou" class="preloader1">                
+               <span></span>
+               <span></span>
+               <span></span>
+               <span></span>
+               <span></span>
+               <span></span>
+               <span></span>
+               <span></span>
+               <span></span>
+               <span></span>
+            </div>
+            
+            <div ng-hide="carregou" class="xe-widget xe-counter-block" data-count=".num" data-from="0" data-to="99.9" data-suffix="%" data-duration="2">
                 <div class="xe-upper">
 
                     <div class="xe-icon">
@@ -205,7 +255,7 @@
         </div>
     
         <div>
-        
+            <p> </p>
         </div>
         
         <script>			
@@ -215,6 +265,7 @@
                 $scope.sla="0";
                 $scope.vol_acum="0";
                 $scope.produtos={};
+                $scope.carregou = true;
            	
 				myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/");
 				myData.on('value', function(snapshot){
@@ -225,7 +276,8 @@
                         $scope.vol_acum=childSnapshot.child('volume_acum').val();
                         //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
 					});
-					$scope.$apply();				
+					$scope.$apply();
+                    $scope.carregou = false;
 				});
             }]);            
         </script>
