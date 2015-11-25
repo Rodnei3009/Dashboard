@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+  <title>Bootstrap Case</title>
+  <meta charset="utf-8">
+  
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
+    
+    <script src="assets/js/angular.min.js"></script>
+    
+    <script src="js/jquery.min.js"></script>
+    
+    <link href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic" rel="stylesheet">
+    <link href="assets/css/fonts/linecons/css/linecons.css" rel="stylesheet">
+    <link href="assets/css/fonts/fontawesome/css/font-awesome.min.css" rel="stylesheet">    
+    
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+	<link rel="stylesheet" href="assets/css/xenon-core.css">
+	<link rel="stylesheet" href="assets/css/xenon-forms.css">
+	
+    <link rel="stylesheet" href="assets/css/formater.css">
+	
+    <link rel="stylesheet" href="assets/css/xenon-skins.css">
+	<link rel="stylesheet" href="assets/css/custom.css">
+	<script src="assets/js/jquery-1.11.1.min.js"></script>
+
+    <link href="assets/css/morris.css" rel="stylesheet">
+    
+    <!-- Bootstrap Core CSS -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.2.3/firebase.js"></script>	
+    <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
+
+
+
+</head>
+<body>
+
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>                        
+              </button>
+              <a class="navbar-brand" href="#">Dashboard</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="evolucao.html">Evolução</a></li>  
+                <li><a href="charts.html">Gráficos</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <div class="col-md-12">
+            <!-- Colored panel, remember to add "panel-color" before applying the color -->
+            <div class="panel panel-color panel-purple"><!-- Add class "collapsed" to minimize the panel -->
+                <div class="panel-heading">
+                    <h3 class="panel-title">Volumetria diária</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    <div id="morris-area-chart"></div>
+
+                </div>
+            </div>
+        </div>
+    
+        
+        <div class="col-md-12">
+            <!-- Colored panel, remember to add "panel-color" before applying the color -->
+            <div class="panel panel-color panel-purple"><!-- Add class "collapsed" to minimize the panel -->
+                <div class="panel-heading">
+                    <h3 class="panel-title">Volumetria diária</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    <div id="morris-bar-chart"></div>
+
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-12">
+            <!-- Colored panel, remember to add "panel-color" before applying the color -->
+            <div class="panel panel-color panel-purple"><!-- Add class "collapsed" to minimize the panel -->
+                <div class="panel-heading">
+                    <h3 class="panel-title">Volumetria acumulada</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    <div id="morris-line-chart"></div>
+
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-12">
+            <!-- Colored panel, remember to add "panel-color" before applying the color -->
+            <div class="panel panel-color panel-purple"><!-- Add class "collapsed" to minimize the panel -->
+                <div class="panel-heading">
+                    <h3 class="panel-title">Volumetria por módulo</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    <div id="morris-donut-chart"></div>
+
+                </div>
+            </div>
+        </div>
+    
+        
+    
+        <div class="col-md-12">
+            <!-- Colored panel, remember to add "panel-color" before applying the color -->
+            <div class="panel panel-color panel-purple"><!-- Add class "collapsed" to minimize the panel -->
+                <div class="chart-item-bg">
+                    <div class="chart-label">
+                        <div class="h3 text-secondary text-bold" data-count="this" data-from="0.00" data-to="14.85" data-suffix="%" data-duration="1">0.00%</div>
+                        <span class="text-medium text-muted">More visitors</span>
+                    </div>
+                    <div id="pageviews-visitors-chart" style="height: 298px;"></div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-12">
+            <!-- Colored panel, remember to add "panel-color" before applying the color -->
+            <div class="panel panel-color panel-purple"><!-- Add class "collapsed" to minimize the panel -->
+                <div class="chart-item-bg">
+                    <div class="chart-label chart-label-small">
+                        <div class="h4 text-purple text-bold" data-count="this" data-from="0.00" data-to="95.8" data-suffix="%" data-duration="1.5">0.00%</div>
+                        <span class="text-small text-upper text-muted">Current Server Uptime</span>
+                    </div>
+                    <div id="server-uptime-chart" style="height: 134px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <script>			
+            var myApp = angular.module('myApp',[]);
+    
+            myApp.controller('dashitems', ['$scope', function($scope) {
+                $scope.sla="0";
+                $scope.vol_acum="0";
+                $scope.produtos={};
+           	
+				myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/");
+				myData.on('value', function(snapshot){
+                    $scope.produtos = [];
+					snapshot.forEach(function(childSnapshot) {
+						//alert(childSnapshot.child('sla').val());
+                        $scope.sla=childSnapshot.child('sla').val();
+                        $scope.vol_acum=childSnapshot.child('volume_acum').val();
+                        //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
+					});
+					$scope.$apply();				
+				});
+            }]);            
+        </script>
+    
+    
+        <script type="text/javascript">
+            jQuery(document).ready(function($)
+            {	
+
+                // Pageviews Visitors Chart
+                var i = 0,
+                    line_chart_data_source = [
+                    { id: ++i, part1: 4, part2: 2 },
+                    { id: ++i, part1: 5, part2: 3 },
+                    { id: ++i, part1: 5, part2: 3 },
+                    { id: ++i, part1: 4, part2: 2 },
+                    { id: ++i, part1: 3, part2: 1 },
+                    { id: ++i, part1: 3, part2: 2 },
+                    { id: ++i, part1: 5, part2: 3 },
+                    { id: ++i, part1: 7, part2: 4 },
+                    { id: ++i, part1: 9, part2: 5 },
+                    { id: ++i, part1: 7, part2: 4 },
+                    { id: ++i, part1: 7, part2: 3 },
+                    { id: ++i, part1: 11, part2: 6 },
+                    { id: ++i, part1: 10, part2: 8 },
+                    { id: ++i, part1: 9, part2: 7 },
+                    { id: ++i, part1: 8, part2: 7 },
+                    { id: ++i, part1: 8, part2: 7 },
+                    { id: ++i, part1: 8, part2: 7 },
+                    { id: ++i, part1: 8, part2: 6 },
+                    { id: ++i, part1: 15, part2: 5 },
+                    { id: ++i, part1: 10, part2: 5 },
+                    { id: ++i, part1: 9, part2: 6 },
+                    { id: ++i, part1: 9, part2: 3 },
+                    { id: ++i, part1: 8, part2: 5 },
+                    { id: ++i, part1: 8, part2: 4 },
+                    { id: ++i, part1: 9, part2: 5 },
+                    { id: ++i, part1: 8, part2: 6 },
+                    { id: ++i, part1: 8, part2: 5 },
+                    { id: ++i, part1: 7, part2: 6 },
+                    { id: ++i, part1: 7, part2: 5 },
+                    { id: ++i, part1: 6, part2: 5 },
+                    { id: ++i, part1: 7, part2: 6 },
+                    { id: ++i, part1: 7, part2: 5 },
+                    { id: ++i, part1: 8, part2: 5 },
+                    { id: ++i, part1: 6, part2: 5 },
+                    { id: ++i, part1: 5, part2: 4 },
+                    { id: ++i, part1: 5, part2: 3 },
+                    { id: ++i, part1: 6, part2: 3 },
+                ];
+
+                $("#pageviews-visitors-chart").dxChart({
+                    dataSource: line_chart_data_source,
+                    commonSeriesSettings: {
+                        argumentField: "id",
+                        point: { visible: true, size: 5, hoverStyle: {size: 7, border: 0, color: 'inherit'} },
+                        line: {width: 1, hoverStyle: {width: 1}}
+                    },
+                    series: [
+                        { valueField: "part1", name: "Pageviews", color: "#68b828" },
+                        { valueField: "part2", name: "Visitors", color: "#eeeeee" },
+                    ],
+                    legend: {
+                        position: 'inside',
+                        paddingLeftRight: 5
+                    },
+                    commonAxisSettings: {
+                        label: {
+                            visible: false
+                        },
+                        grid: {
+                            visible: true,
+                            color: '#f9f9f9'
+                        }
+                    },
+                    valueAxis: {
+                        max: 25
+                    },
+                    argumentAxis: {
+                        valueMarginsEnabled: false
+                    },
+                });
+
+
+
+                // Server Uptime Chart
+                var bar1_data_source = [
+                    { year: 1, 	europe: 10, americas: 0, africa: 5 },
+                    { year: 2, 	europe: 20, americas: 5, africa: 15 },
+                    { year: 3, 	europe: 30, americas: 10, africa: 15 },
+                    { year: 4, 	europe: 40, americas: 15, africa: 30 },
+                    { year: 5, 	europe: 30, americas: 10, africa: 20 },
+                    { year: 6, 	europe: 20, americas: 5,  africa: 10 },
+                    { year: 7, 	europe: 10, americas: 15, africa: 0 },
+                    { year: 8, 	europe: 20, americas: 25, africa: 8 },
+                    { year: 9, 	europe: 30, americas: 35, africa: 16 },
+                    { year: 10,	europe: 40, americas: 45, africa: 24 },
+                    { year: 11,	europe: 50, americas: 40, africa: 32 },
+                ];
+
+                $("#server-uptime-chart").dxChart({
+                    dataSource: [
+                        {id: ++i, 	sales: 1},
+                        {id: ++i, 	sales: 2},
+                        {id: ++i, 	sales: 3},
+                        {id: ++i, 	sales: 4},
+                        {id: ++i, 	sales: 5},
+                        {id: ++i, 	sales: 4},
+                        {id: ++i, 	sales: 5},
+                        {id: ++i, 	sales: 6},
+                        {id: ++i, 	sales: 7},
+                        {id: ++i, 	sales: 6},
+                        {id: ++i, 	sales: 5},
+                        {id: ++i, 	sales: 4},
+                        {id: ++i, 	sales: 5},
+                        {id: ++i, 	sales: 4},
+                        {id: ++i, 	sales: 4},
+                        {id: ++i, 	sales: 3},
+                        {id: ++i, 	sales: 4},
+                    ],
+
+                    series: {
+                        argumentField: "id",
+                        valueField: "sales",
+                        name: "Sales",
+                        type: "bar",
+                        color: '#7c38bc'
+                    },
+                    commonAxisSettings: {
+                        label: {
+                            visible: false
+                        },
+                        grid: {
+                            visible: false
+                        }
+                    },
+                    legend: {
+                        visible: false
+                    },
+                    argumentAxis: {
+                        valueMarginsEnabled: true
+                    },
+                    valueAxis: {
+                        max: 12
+                    },
+                    equalBarWidth: {
+                        width: 11
+                    }
+                });
+            });
+        </script>
+    
+
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="js/bootstrap.min.js"></script>
+
+        <!-- Morris Charts JavaScript -->
+        <script src="js/plugins/morris/raphael.min.js"></script>
+        <script src="js/plugins/morris/morris.min.js"></script>
+        <script src="js/plugins/morris/morris-data.js"></script>
+
+        <!-- Flot Charts JavaScript -->
+        <!--[if lte IE 8]><script src="js/excanvas.min.js"></script><![endif]-->
+        <script src="js/plugins/flot/jquery.flot.js"></script>
+        <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+        <script src="js/plugins/flot/jquery.flot.resize.js"></script>
+        <script src="js/plugins/flot/jquery.flot.pie.js"></script>
+        <script src="js/plugins/flot/flot-data.js"></script>
+
+        <script src="assets/js/devexpress-web-14.1/js/globalize.min.js"></script>
+        <script src="assets/js/devexpress-web-14.1/js/dx.chartjs.js"></script>
+                
+    
+    
+</body>
+</html>

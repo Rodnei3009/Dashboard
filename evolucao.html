@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+  <title>Bootstrap Case</title>
+  <meta charset="utf-8">
+  
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
+    
+    <script src="assets/js/angular.min.js"></script>
+    
+    <script src="js/jquery.min.js"></script>
+    
+    <link href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic" rel="stylesheet">
+    <link href="assets/css/fonts/linecons/css/linecons.css" rel="stylesheet">
+    <link href="assets/css/fonts/fontawesome/css/font-awesome.min.css" rel="stylesheet">    
+    
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+	<link rel="stylesheet" href="assets/css/xenon-core.css">
+	<link rel="stylesheet" href="assets/css/xenon-forms.css">
+	
+    <link rel="stylesheet" href="assets/css/formater.css">
+	
+    <link rel="stylesheet" href="assets/css/xenon-skins.css">
+	<link rel="stylesheet" href="assets/css/custom.css">
+	<script src="assets/js/jquery-1.11.1.min.js"></script>
+
+    
+    <!-- Bootstrap Core CSS -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.2.3/firebase.js"></script>	
+    <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
+
+
+
+</head>
+<body>
+
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>                        
+              </button>
+              <a class="navbar-brand" href="#">Dashboard</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="evolucao.html">Evolução</a></li>  
+                <li><a href="charts.html">Gráficos</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+    
+        <div class="col-md-12">
+            <!-- Colored panel, remember to add "panel-color" before applying the color -->
+            <div class="panel panel-color panel-purple"><!-- Add class "collapsed" to minimize the panel -->
+                <div class="chart-item-bg">
+                    <div class="chart-label">
+                        <div class="h3 text-secondary text-bold" data-count="this" data-from="0.00" data-to="14.85" data-suffix="%" data-duration="1">{{sla}}%</div>
+                        <span class="text-medium text-muted">Evolução SLA</span>
+                    </div>
+                    <div id="pageviews-visitors-chart" style="height: 298px;"></div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-12">
+            <!-- Colored panel, remember to add "panel-color" before applying the color -->
+            <div class="panel panel-color panel-purple"><!-- Add class "collapsed" to minimize the panel -->
+                <div class="chart-item-bg">
+                    <div class="chart-label">
+                        <div class="h3 text-secondary text-bold" data-count="this" data-from="0.00" data-to="14.85" data-suffix="%" data-duration="1">0</div>
+                        <span class="text-medium text-muted">Evolução Backlog</span>
+                    </div>
+                    <div id="pageviews-visitors-chart_2" style="height: 298px;"></div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-12">
+            <!-- Colored panel, remember to add "panel-color" before applying the color -->
+            <div class="panel panel-color panel-purple"><!-- Add class "collapsed" to minimize the panel -->
+                <div class="chart-item-bg">
+                    <div class="chart-label chart-label-small">
+                        <div class="h4 text-purple text-bold" data-count="this" data-from="0.00" data-to="95.8" data-suffix="%" data-duration="1.5">0</div>
+                        <span class="text-small text-upper text-muted">Volumetria por dia</span>
+                    </div>
+                    <div id="server-uptime-chart" style="height: 134px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <script>			
+            var myApp = angular.module('myApp',[]);
+    
+            myApp.controller('dashitems', ['$scope', function($scope) {
+                $scope.sla="0";
+                $scope.vol_acum="0";
+                $scope.produtos={};
+           	
+				myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/");
+				myData.on('value', function(snapshot){
+                    $scope.produtos = [];
+					snapshot.forEach(function(childSnapshot) {
+						//alert(childSnapshot.child('sla').val());
+                        $scope.sla=childSnapshot.child('sla').val();
+                        $scope.vol_acum=childSnapshot.child('volume_acum').val();
+                        //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
+					});
+					$scope.$apply();				
+				});
+            }]);            
+        </script>
+    
+    
+        <script type="text/javascript">
+            jQuery(document).ready(function($)
+            {	
+
+                // SLA
+                var i = 0,
+                    line_chart_data_source = [
+                    { id: ++i, part1: 40},
+                    { id: ++i, part1: 50},
+                    { id: ++i, part1: 50},
+                    { id: ++i, part1: 40},
+                    { id: ++i, part1: 30},
+                    { id: ++i, part1: 60},
+                    { id: ++i, part1: 62},
+                    { id: ++i, part1: 63},
+                    { id: ++i, part1: 65},
+                    { id: ++i, part1: 68},
+                    { id: ++i, part1: 71},
+                    { id: ++i, part1: 72},
+                    { id: ++i, part1: 72},
+                    { id: ++i, part1: 74},
+                    { id: ++i, part1: 75},
+                    { id: ++i, part1: 73},
+                    { id: ++i, part1: 79},
+                    { id: ++i, part1: 82},
+                    { id: ++i, part1: 90},
+                    { id: ++i, part1: 85},
+                    { id: ++i, part1: 80},
+                    { id: ++i, part1: 82},
+                    { id: ++i, part1: 85},
+                    { id: ++i, part1: 87},
+                    { id: ++i, part1: 88},
+                    { id: ++i, part1: 90},
+                    { id: ++i, part1: 92},
+                    { id: ++i, part1: 94},
+                    { id: ++i, part1: 96},
+                    { id: ++i, part1: 98},    
+                ];
+
+                $("#pageviews-visitors-chart").dxChart({
+                    dataSource: line_chart_data_source,
+                    commonSeriesSettings: {
+                        argumentField: "id",
+                        point: { visible: true, size: 5, hoverStyle: {size: 7, border: 0, color: 'inherit'} },
+                        line: {width: 1, hoverStyle: {width: 1}}
+                    },
+                    series: [
+                        { valueField: "part1", name: "SLA", color: "#68b828" },
+                        //{ valueField: "part2", name: "", color: "#eeeeee" },
+                    ],
+                    legend: {
+                        position: 'inside',
+                        paddingLeftRight: 5
+                    },
+                    commonAxisSettings: {
+                        label: {
+                            visible: true
+                        },
+                        grid: {
+                            visible: true,
+                            color: '#f9f9f9'
+                        }
+                    },
+                    valueAxis: {
+                        max: 100
+                    },
+                    argumentAxis: {
+                        valueMarginsEnabled: false
+                    },
+                });
+
+                
+                // Pageviews Visitors Chart
+                var i = 0,
+                    line_chart_data_source_2 = [
+                    { id: ++i, part1: 90},
+                    { id: ++i, part1: 82},
+                    { id: ++i, part1: 85},
+                    { id: ++i, part1: 82},
+                    { id: ++i, part1: 85},
+                    { id: ++i, part1: 80},
+                    { id: ++i, part1: 82},
+                    { id: ++i, part1: 85},
+                    { id: ++i, part1: 87},
+                    { id: ++i, part1: 88},
+                    { id: ++i, part1: 90},
+                    { id: ++i, part1: 92},
+                    { id: ++i, part1: 94},
+                    { id: ++i, part1: 96},
+                    { id: ++i, part1: 98}, 
+                    { id: ++i, part1: 85},
+                    { id: ++i, part1: 88},
+                    { id: ++i, part1: 81},
+                    { id: ++i, part1: 79},
+                    { id: ++i, part1: 72},
+                    { id: ++i, part1: 69},
+                    { id: ++i, part1: 65},
+                    { id: ++i, part1: 58},
+                    { id: ++i, part1: 55},
+                    { id: ++i, part1: 50},
+                    { id: ++i, part1: 45},
+                    { id: ++i, part1: 45},
+                    { id: ++i, part1: 40},
+                    { id: ++i, part1: 35},
+                    { id: ++i, part1: 30}, 
+                ];
+
+                $("#pageviews-visitors-chart_2").dxChart({
+                    dataSource: line_chart_data_source_2,
+                    commonSeriesSettings: {
+                        argumentField: "id",
+                        point: { visible: true, size: 5, hoverStyle: {size: 7, border: 0, color: 'inherit'} },
+                        line: {width: 1, hoverStyle: {width: 1}}
+                    },
+                    series: [
+                        { valueField: "part1", name: "Backlog", color: "#68b828" },
+                        //{ valueField: "part2", name: "Visitors", color: "#eeeeee" },
+                    ],
+                    legend: {
+                        position: 'inside',
+                        paddingLeftRight: 5
+                    },
+                    commonAxisSettings: {
+                        label: {
+                            visible: true
+                        },
+                        grid: {
+                            visible: true,
+                            color: '#f9f9f9'
+                        }
+                    },
+                    valueAxis: {
+                        max: 100
+                    },
+                    argumentAxis: {
+                        valueMarginsEnabled: false
+                    },
+                });
+            
+            
+
+
+                $("#server-uptime-chart").dxChart({
+                    dataSource: [
+                        {id: ++i,  sales: 10},
+                        {id: ++i,  sales: 20},
+                        {id: ++i,  sales: 24},
+                        {id: ++i,  sales: 35},
+                        {id: ++i,  sales: 33},
+                        {id: ++i,  sales: 22},
+                        {id: ++i,  sales: 13},
+                        {id: ++i,  sales: 13},
+                        {id: ++i,  sales: 45},
+                        {id: ++i,  sales: 26},
+                        {id: ++i,  sales: 32},
+                        {id: ++i,  sales: 31},
+                        {id: ++i,  sales: 25},
+                        {id: ++i,  sales: 36},
+                        {id: ++i,  sales: 25},
+                        {id: ++i,  sales: 38},
+                        {id: ++i,  sales: 34},
+                        {id: ++i,  sales: 22},
+                        {id: ++i,  sales: 13},
+                        {id: ++i,  sales: 13},
+                        {id: ++i,  sales: 45},
+                        {id: ++i,  sales: 26},
+                        {id: ++i,  sales: 32},
+                        {id: ++i,  sales: 31},
+                        {id: ++i,  sales: 25},
+                        {id: ++i,  sales: 36},
+                        {id: ++i,  sales: 45},
+                        {id: ++i,  sales: 67},
+                        {id: ++i,  sales: 35},
+                        {id: ++i,  sales: 28},
+                    ],
+
+                    series: {
+                        argumentField: "id",
+                        valueField: "sales",
+                        name: "Sales",
+                        type: "bar",
+                        color: '#7c38bc'
+                    },
+                    commonAxisSettings: {
+                        label: {
+                            visible: true
+                        },
+                        grid: {
+                            visible: true
+                        }
+                    },
+                    legend: {
+                        visible: false
+                    },
+                    argumentAxis: {
+                        valueMarginsEnabled: false
+                    },
+                    valueAxis: {
+                        max: 70
+                    },
+                    equalBarWidth: {
+                        width: 10
+                    }
+                });
+            });
+        </script>
+    
+
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="js/bootstrap.min.js"></script>
+
+        <!-- Morris Charts JavaScript -->
+        <script src="js/plugins/morris/raphael.min.js"></script>
+        <script src="js/plugins/morris/morris.min.js"></script>
+        <script src="js/plugins/morris/morris-data.js"></script>
+
+        <!-- Flot Charts JavaScript -->
+        <!--[if lte IE 8]><script src="js/excanvas.min.js"></script><![endif]-->
+        <script src="js/plugins/flot/jquery.flot.js"></script>
+        <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+        <script src="js/plugins/flot/jquery.flot.resize.js"></script>
+        <script src="js/plugins/flot/jquery.flot.pie.js"></script>
+        <script src="js/plugins/flot/flot-data.js"></script>
+
+        <script src="assets/js/devexpress-web-14.1/js/globalize.min.js"></script>
+        <script src="assets/js/devexpress-web-14.1/js/dx.chartjs.js"></script>
+                
+    
+    
+</body>
+</html>
