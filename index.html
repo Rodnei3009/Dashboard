@@ -34,6 +34,13 @@
     <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
 
     <style>
+        
+        .spinnerpos {
+          position: absolute;
+          top: 50%;
+          right: 50%;
+        }
+        
         .preloader1 {
            width:40px;
            height:40px;
@@ -42,6 +49,7 @@
            text-align:left;
            -webkit-animation:preloader1 1.4s linear infinite;
            animation:preloader1 1.4s linear infinite;
+            align-content: center;
         }
         .preloader1 span {
            position:absolute;
@@ -52,7 +60,7 @@
            width:8px;
            height:8px;
            margin-left:16px;
-           transform-origin:center 20px;
+           transform-origin:center 0px;
            -webkit-transform-origin:center 20px;
         }
         .preloader1 span:nth-child(2) {transform: rotate(36deg);-webkit-transform: rotate(36deg); opacity:0.1;}
@@ -75,7 +83,7 @@
     </style>
 
 </head>
-<body>
+<body ng-controller="dashitems">
 
         <nav class="navbar navbar-inverse">
           <div class="container-fluid">
@@ -97,9 +105,8 @@
           </div>
         </nav>
     
-        <div class="col-sm-4" ng-controller="dashitems">
-            
-            <div ng-show="carregou" class="preloader1">                
+        <div class="spinnerpos" ng-show="carregou">
+            <div class="preloader1">                
                <span></span>
                <span></span>
                <span></span>
@@ -111,173 +118,227 @@
                <span></span>
                <span></span>
             </div>
-            
-            <div ng-hide="carregou" class="xe-widget xe-counter-block" data-count=".num" data-from="0" data-to="99.9" data-suffix="%" data-duration="2">
-                <div class="xe-upper">
-
-                    <div class="xe-icon">
-                        <i class="fa-tachometer"></i>
-                    </div>
-                    <div class="xe-label">
-                        <strong class="num">{{sla}}</strong>
-                        <span>SLA no prazo</span>
-                    </div>
-
-                </div>
-                <div class="xe-lower">
-                    <div class="border"></div>
-
-                    <span>Meta</span>
-                    <strong>98% no prazo</strong>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-sm-4" ng-controller="dashitems">
-
-            <div class="xe-widget xe-counter-block xe-counter-block-purple" data-count=".num" data-from="0" data-to="512" data-duration="3">
-                <div class="xe-upper">
-
-                    <div class="xe-icon">
-                        <i class="fa-line-chart"></i>
-                    </div>
-                    <div class="xe-label">
-                        <strong class="num">{{vol_acum}}</strong>
-                        <span>Volume de tickets até a data</span>
-                    </div>
-
-                </div>
-                <div class="xe-lower">
-                    <div class="border"></div>
-
-                    <span>Baseline mensal</span>
-                    <strong>639 tickets</strong>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-sm-4">
-				
-            <div class="xe-widget xe-counter-block xe-counter-block-red" data-count=".num" data-from="0" data-to="99.9" data-suffix="%" data-duration="2">
-                <div class="xe-upper">
-
-                    <div class="xe-icon">
-                        <i class="fa-thumbs-down"></i>
-                    </div>
-                    <div class="xe-label">
-                        <strong class="num">0</strong>
-                        <span>Tickets reabertos</span>
-                    </div>
-
-                </div>
-                <div class="xe-lower">
-                    <div class="border"></div>
-
-                    <span>Meta</span>
-                    <strong>0 tickets reabertos</strong>
-                </div>
-            </div>
-
-        </div>
-    
-        <div class="col-sm-4">
-
-            <div class="xe-widget xe-counter-block xe-counter-block-yellow" data-count=".num" data-from="0" data-to="512" data-duration="3">
-                <div class="xe-upper">
-
-                    <div class="xe-icon">
-                        <i class="linecons-attach"></i>
-                    </div>
-                    <div class="xe-label">
-                        <strong class="num">10</strong>
-                        <span>Tickets com vecto no dia</span>
-                    </div>
-
-                </div>
-                <div class="xe-lower">
-                    <div class="border"></div>
-
-                    <span>Atenção</span>
-                    <strong>10 tickets vencem hoje</strong>
-                </div>
-            </div>
-
-        </div>
-    
-        <div class="col-sm-4">
-
-            <div class="xe-widget xe-counter-block xe-counter-block-blue" data-suffix="k" data-count=".num" data-from="0" data-to="310" data-duration="4" data-easing="false">
-                <div class="xe-upper">
-
-                    <div class="xe-icon">
-                        <i class="fa-ban"></i>
-                    </div>
-                    <div class="xe-label">
-                        <strong class="num">20</strong>
-                        <span>Backlog</span>
-                    </div>
-
-                </div>
-                <div class="xe-lower">
-                    <div class="border"></div>
-
-                    <span>Backlog</span>
-                    <strong>Tickets vencidos e não resolvidos</strong>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-sm-4">
-
-            <div class="xe-widget xe-counter-block xe-counter-block-orange">
-                <div class="xe-upper">
-
-                    <div class="xe-icon">
-                        <i class="fa-info-circle"></i>
-                    </div>
-                    <div class="xe-label">
-                        <strong class="num">21</strong>
-                        <span>Aging</span>
-                    </div>
-
-                </div>
-                <div class="xe-lower">
-                    <div class="border"></div>
-
-                    <span>Aging</span>
-                    <strong>Idade média dos tickets vencidos</strong>
-                </div>
-            </div>
-
-        </div>
-    
-        <div>
-            <p> </p>
-        </div>
+        </div>    
         
+        <div ng-hide="carregou" >
+    
+            <div class="col-sm-4">
+                <div class="xe-widget xe-counter-block" data-count=".num" data-from="0" data-to="99.9" data-suffix="%" data-duration="2">
+                    <div class="xe-upper">
+
+                        <div class="xe-icon">
+                            <i class="fa-tachometer"></i>
+                        </div>
+                        <div class="xe-label">
+                            <strong class="num">{{sla}}%</strong>
+                            <span>SLA no prazo</span>
+                        </div>
+
+                    </div>
+                    <div class="xe-lower">
+                        <div class="border"></div>
+
+                        <span>Meta</span>
+                        <strong>98% no prazo</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4" ng-controller="dashitems">
+
+                <div class="xe-widget xe-counter-block xe-counter-block-purple" data-count=".num" data-from="0" data-to="512" data-duration="3">
+                    <div class="xe-upper">
+
+                        <div class="xe-icon">
+                            <i class="fa-line-chart"></i>
+                        </div>
+                        <div class="xe-label">
+                            <strong class="num">{{vol_acum}}</strong>
+                            <span>Volume de tickets até a data</span>
+                        </div>
+
+                    </div>
+                    <div class="xe-lower">
+                        <div class="border"></div>
+
+                        <span>Baseline mensal</span>
+                        <strong>639 tickets</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+
+                <div class="xe-widget xe-counter-block xe-counter-block-red" data-count=".num" data-from="0" data-to="99.9" data-suffix="%" data-duration="2">
+                    <div class="xe-upper">
+
+                        <div class="xe-icon">
+                            <i class="fa-thumbs-down"></i>
+                        </div>
+                        <div class="xe-label">
+                            <strong class="num">{{reabertos}}</strong>
+                            <span>Tickets reabertos</span>
+                        </div>
+
+                    </div>
+                    <div class="xe-lower">
+                        <div class="border"></div>
+
+                        <span>Meta</span>
+                        <strong>0 tickets reabertos</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+
+                <div class="xe-widget xe-counter-block xe-counter-block-yellow" data-count=".num" data-from="0" data-to="512" data-duration="3">
+                    <div class="xe-upper">
+
+                        <div class="xe-icon">
+                            <i class="linecons-attach"></i>
+                        </div>
+                        <div class="xe-label">
+                            <strong class="num">{{vcto_no_dia}}</strong>
+                            <span>Tickets com vecto no dia</span>
+                        </div>
+
+                    </div>
+                    <div class="xe-lower">
+                        <div class="border"></div>
+
+                        <span>Atenção</span>
+                        <strong>10 tickets vencem hoje</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+
+                <div class="xe-widget xe-counter-block xe-counter-block-blue" data-suffix="k" data-count=".num" data-from="0" data-to="310" data-duration="4" data-easing="false">
+                    <div class="xe-upper">
+
+                        <div class="xe-icon">
+                            <i class="fa-ban"></i>
+                        </div>
+                        <div class="xe-label">
+                            <strong class="num">20</strong>
+                            <span>Backlog</span>
+                        </div>
+
+                    </div>
+                    <div class="xe-lower">
+                        <div class="border"></div>
+
+                        <span>Backlog</span>
+                        <strong>Tickets vencidos e não resolvidos</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+
+                <div class="xe-widget xe-counter-block xe-counter-block-orange">
+                    <div class="xe-upper">
+
+                        <div class="xe-icon">
+                            <i class="fa-info-circle"></i>
+                        </div>
+                        <div class="xe-label">
+                            <strong class="num">21</strong>
+                            <span>Aging</span>
+                        </div>
+
+                    </div>
+                    <div class="xe-lower">
+                        <div class="border"></div>
+
+                        <span>Aging</span>
+                        <strong>Idade média dos tickets vencidos</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div>
+                <br>
+            </div>
+        
+            
+        </div>    
+            
         <script>			
             var myApp = angular.module('myApp',[]);
     
             myApp.controller('dashitems', ['$scope', function($scope) {
-                $scope.sla="0";
-                $scope.vol_acum="0";
+                $scope.sla=0;
+                $scope.vol_acum=0;
+                $scope.reabertos=0;
+                $scope.vcto_no_dia=0;
+                
                 $scope.produtos={};
                 $scope.carregou = true;
-           	
-				myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/");
+                
+                var no_prazo = 0;
+                var reabertos = 0;
+                var vcto_no_dia = 0;
+                var temp = "";
+                
+                var ano = "";
+                var mes = "";
+                var dia = "";
+                var hoje = "";
+                var ano_mes = "";
+                var qtd_dias = 0;
+                
+                data = new Date();
+                ano = data.getFullYear();
+                mes = data.getMonth() + 1;
+                dia = data.getDate();
+                hoje = ano+""+mes+""+dia;
+           	    
+				myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/" + ano + "" + mes);
 				myData.on('value', function(snapshot){
                     $scope.produtos = [];
-					snapshot.forEach(function(childSnapshot) {
-						//alert(childSnapshot.child('sla').val());
-                        $scope.sla=childSnapshot.child('sla').val();
-                        $scope.vol_acum=childSnapshot.child('volume_acum').val();
+					qtd_dias = snapshot.numChildren();
+                    
+                    snapshot.forEach(function(childSnapshot) { //para cada dia
+						
+                        //alert(childSnapshot.name());
+                        
+                            $scope.vol_acum = $scope.vol_acum + childSnapshot.numChildren();
+                            
+                            childSnapshot.forEach(function(childSnapshottkt) { //para cada ticket
+						          
+                                no_prazo = no_prazo + childSnapshottkt.child('no_prazo').val();
+                                reabertos = reabertos + childSnapshottkt.child('reaberto').val();
+                                
+                                if  (childSnapshottkt.child('vcto').val().toString().substring(0,8) === hoje) {    
+                                    vcto_no_dia = vcto_no_dia + 1;
+                                }
+                                
+                            });
+                        
+                        
+                        
                         //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
 					});
 					$scope.$apply();
                     $scope.carregou = false;
+                    //alert("Total de tickets " + $scope.vol_acum); //total de tickets no dia
+                    //alert(qtd_dias); //total de dias
+                    //alert("No prazo " + no_prazo);
+                    //alert(vcto_no_dia);
+                    
+                    $scope.sla = no_prazo / $scope.vol_acum * 100;
+                    $scope.reabertos = reabertos;
+                    $scope.vcto_no_dia = vcto_no_dia;
+                    
 				});
             }]);            
         </script>
