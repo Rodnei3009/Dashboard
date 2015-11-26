@@ -288,6 +288,7 @@
                 var reabertos = 0;
                 var vcto_no_dia = 0;
                 var temp = "";
+                var sla = 0;
                 
                 var ano = "";
                 var mes = "";
@@ -335,7 +336,9 @@
                     //alert("No prazo " + no_prazo);
                     //alert(vcto_no_dia);
                     
-                    $scope.sla = no_prazo / $scope.vol_acum * 100;
+                    sla =  no_prazo / $scope.vol_acum * 100;
+                    //alert(sla.toFixed(1));  //alert(Math.round(sla));
+                    $scope.sla = sla.toFixed(1);
                     $scope.reabertos = reabertos;
                     $scope.vcto_no_dia = vcto_no_dia;
                     
