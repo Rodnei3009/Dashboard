@@ -85,7 +85,7 @@
 </head>
 <body ng-controller="dashitems">
 
-        <nav class="navbar navbar-inverse">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
           <div class="container-fluid">
             <div class="navbar-header">
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -101,9 +101,19 @@
                 <li><a href="evolucao.html">Evolução</a></li>  
                 <li><a href="charts.html">Gráficos</a></li>
               </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a>{{currentTime}}</a></li>
+              </ul>    
             </div>
           </div>
         </nav>
+    
+        <div>
+            <br>
+            <br>
+            <br>
+            <br>
+        </div>
     
         <div class="spinnerpos" ng-show="carregou">
             <div class="preloader1">                
@@ -273,9 +283,21 @@
         </div>    
             
         <script>			
-            var myApp = angular.module('myApp',[]);
+            /*
+            var app = angular.module('clock', []);
+
+            app.controller('ClockController', ['$scope', '$interval', 'dateFilter', function($scope, $interval, dateFilter) {
+              $scope.currentTime = dateFilter(new Date(), 'hh:mm');
+
+              var updateTime = $interval(function() {
+                $scope.currentTime = dateFilter(new Date(), 'hh:mm');
+              }, 1000);
+            }]);
+            */
+            
+            var myApp = angular.module('myApp', []);
     
-            myApp.controller('dashitems', ['$scope', function($scope) {
+            myApp.controller('dashitems', ['$scope', '$interval', 'dateFilter', function($scope, $interval, dateFilter) {
                 $scope.sla=0;
                 $scope.vol_acum=0;
                 $scope.reabertos=0;
@@ -290,20 +312,21 @@
                 var temp = "";
                 var sla = 0;
                 
-                var ano = "";
-                var mes = "";
-                var dia = "";
+                var ano_mes = dateFilter(new Date(), 'yyyyMM');
                 var hoje = "";
-                var ano_mes = "";
                 var qtd_dias = 0;
                 
                 data = new Date();
-                ano = data.getFullYear();
-                mes = data.getMonth() + 1;
-                dia = data.getDate();
-                hoje = ano+""+mes+""+dia;
+                hoje = dateFilter(new Date(), 'yyyyMMdd');
            	    
-				myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/" + ano + "" + mes);
+                $scope.currentTime = dateFilter(new Date(), 'hh:mm:ss');
+
+                var updateTime = $interval(function() {
+                    $scope.currentTime = dateFilter(new Date(), 'hh:mm:ss');
+                }, 1000);
+                
+                
+				myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/" + ano_mes);
 				myData.on('value', function(snapshot){
                     $scope.produtos = [];
 					qtd_dias = snapshot.numChildren();
@@ -364,8 +387,6 @@
 
         <script src="assets/js/devexpress-web-14.1/js/globalize.min.js"></script>
         <script src="assets/js/devexpress-web-14.1/js/dx.chartjs.js"></script>
-                
-    
-    
+
 </body>
 </html>
