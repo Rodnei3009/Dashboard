@@ -9,6 +9,7 @@
     <script src="assets/js/angular.min.js"></script>
     
     <script src="js/jquery.min.js"></script>
+    <script src="js/dash.js"></script>
     
     <link href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic" rel="stylesheet">
     <link href="assets/css/fonts/linecons/css/linecons.css" rel="stylesheet">
@@ -32,7 +33,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
     <script src="https://cdn.firebase.com/js/client/2.2.3/firebase.js"></script>	
     <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script>
+    
     <style>
         
         .spinnerpos {
@@ -83,7 +85,7 @@
     </style>
 
 </head>
-<body ng-controller="dashitems">
+<body ng-controller="dashitems" ng-init="carregar(ano_mes)">
 
         <nav class="navbar navbar-inverse navbar-fixed-top">
           <div class="container-fluid">
@@ -109,8 +111,7 @@
         </nav>
     
         <div>
-            <br>
-            <br>
+        
             <br>
             <br>
         </div>
@@ -131,7 +132,15 @@
         </div>    
         
         <div ng-hide="carregou" >
-    
+            
+            <div class="block-center text-center align-center hidden-xs col-sm-12">
+                <h3>
+                    <button type="button" class="btn btn-success btn-lg" ng-click="before()"><i class="fa fa-lg fa-chevron-circle-left"></i></button>
+                    <strong>&nbsp;{{data_exibir}}&nbsp;</strong>
+                    <button type="button" class="btn btn-success btn-lg" ng-click="after()"><i class="fa fa-lg fa-chevron-circle-right"></i></button>
+                </h3>
+            </div>
+            
             <div class="col-sm-4">
                 <div class="xe-widget xe-counter-block" data-count=".num" data-from="0" data-to="99.9" data-suffix="%" data-duration="2">
                     <div class="xe-upper">
@@ -252,7 +261,6 @@
             </div>
 
             <div class="col-sm-4">
-
                 <div class="xe-widget xe-counter-block xe-counter-block-orange">
                     <div class="xe-upper">
 
@@ -263,114 +271,22 @@
                             <strong class="num">21</strong>
                             <span>Aging</span>
                         </div>
-
                     </div>
                     <div class="xe-lower">
                         <div class="border"></div>
-
                         <span>Aging</span>
                         <strong>Idade média dos tickets vencidos</strong>
                     </div>
                 </div>
-
             </div>
-
             <div>
                 <br>
             </div>
-        
-            
-        </div>    
-            
-        <script>			
-            /*
-            var app = angular.module('clock', []);
-
-            app.controller('ClockController', ['$scope', '$interval', 'dateFilter', function($scope, $interval, dateFilter) {
-              $scope.currentTime = dateFilter(new Date(), 'hh:mm');
-
-              var updateTime = $interval(function() {
-                $scope.currentTime = dateFilter(new Date(), 'hh:mm');
-              }, 1000);
-            }]);
-            */
-            
-            var myApp = angular.module('myApp', []);
-    
-            myApp.controller('dashitems', ['$scope', '$interval', 'dateFilter', function($scope, $interval, dateFilter) {
-                $scope.sla=0;
-                $scope.vol_acum=0;
-                $scope.reabertos=0;
-                $scope.vcto_no_dia=0;
+        </div>
                 
-                $scope.produtos={};
-                $scope.carregou = true;
-                
-                var no_prazo = 0;
-                var reabertos = 0;
-                var vcto_no_dia = 0;
-                var temp = "";
-                var sla = 0;
-                
-                var ano_mes = dateFilter(new Date(), 'yyyyMM');
-                var hoje = "";
-                var qtd_dias = 0;
-                
-                data = new Date();
-                hoje = dateFilter(new Date(), 'yyyyMMdd');
-           	    
-                $scope.currentTime = dateFilter(new Date(), 'hh:mm:ss');
-
-                var updateTime = $interval(function() {
-                    $scope.currentTime = dateFilter(new Date(), 'hh:mm:ss');
-                }, 1000);
-                
-                
-				myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/" + ano_mes);
-				myData.on('value', function(snapshot){
-                    $scope.produtos = [];
-					qtd_dias = snapshot.numChildren();
-                    
-                    snapshot.forEach(function(childSnapshot) { //para cada dia
-						
-                        //alert(childSnapshot.name());
-                        
-                            $scope.vol_acum = $scope.vol_acum + childSnapshot.numChildren();
-                            
-                            childSnapshot.forEach(function(childSnapshottkt) { //para cada ticket
-						          
-                                no_prazo = no_prazo + childSnapshottkt.child('no_prazo').val();
-                                reabertos = reabertos + childSnapshottkt.child('reaberto').val();
-                                
-                                if  (childSnapshottkt.child('vcto').val().toString().substring(0,8) === hoje) {    
-                                    vcto_no_dia = vcto_no_dia + 1;
-                                }
-                                
-                            });
-                        
-                        
-                        
-                        //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
-					});
-					$scope.$apply();
-                    $scope.carregou = false;
-                    //alert("Total de tickets " + $scope.vol_acum); //total de tickets no dia
-                    //alert(qtd_dias); //total de dias
-                    //alert("No prazo " + no_prazo);
-                    //alert(vcto_no_dia);
-                    
-                    sla =  no_prazo / $scope.vol_acum * 100;
-                    //alert(sla.toFixed(1));  //alert(Math.round(sla));
-                    $scope.sla = sla.toFixed(1);
-                    $scope.reabertos = reabertos;
-                    $scope.vcto_no_dia = vcto_no_dia;
-                    
-				});
-            }]);            
-        </script>
-    
         <!-- Bootstrap Core JavaScript -->
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/dash.js"></script>
 
         <!-- Morris Charts JavaScript -->
         <script src="js/plugins/morris/raphael.min.js"></script>
