@@ -9,7 +9,7 @@
     <script src="assets/js/angular.min.js"></script>
     
     <script src="js/jquery.min.js"></script>
-    <script src="js/dash.js"></script>
+    <script src="js/dashdaily.js"></script>
     
     <link href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic" rel="stylesheet">
     <link href="assets/css/fonts/linecons/css/linecons.css" rel="stylesheet">
@@ -37,7 +37,7 @@
     
 
 </head>
-<body ng-controller="dashitems" ng-init="carregar(ano_mes)">
+<body ng-controller="dashitems" ng-init="carregar(ano_mes_dia)">
 
         <nav class="navbar navbar-inverse navbar-fixed-top">
           <div class="container-fluid">
@@ -47,12 +47,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>                        
               </button>
-              <a class="navbar-brand" href="#">IT Dashboard</a>
+              <a class="navbar-brand">IT Dashboard</a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
               <ul class="nav navbar-nav">
                 <li><a href="index.html">Mensal</a></li>
-                <li><a href="dailydash.html">Diário</a></li>
+                <li><a href="dailydash.html">Diário</a></li>                  
                 <li><a href="evolucao.html">Evolução</a></li>  
                 <li><a href="charts.html">Gráficos</a></li>
               </ul>
@@ -126,7 +126,7 @@
                         </div>
                         <div class="xe-label">
                             <strong class="num">{{vol_acum}}</strong>
-                            <span>Volume de tickets até a data</span>
+                            <span>Volume de tickets abertos</span>
                         </div>
 
                     </div>
@@ -164,73 +164,7 @@
 
             </div>
 
-            <div class="col-sm-4">
-
-                <div class="xe-widget xe-counter-block xe-counter-block-yellow" data-count=".num" data-from="0" data-to="512" data-duration="3">
-                    <div class="xe-upper">
-
-                        <div class="xe-icon">
-                            <i class="linecons-attach"></i>
-                        </div>
-                        <div class="xe-label">
-                            <strong class="num">{{vcto_no_dia}}</strong>
-                            <span>Tickets com vecto no dia</span>
-                        </div>
-
-                    </div>
-                    <div class="xe-lower">
-                        <div class="border"></div>
-
-                        <span>Atenção</span>
-                        <strong>10 tickets vencem hoje</strong>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-sm-4">
-
-                <div class="xe-widget xe-counter-block xe-counter-block-blue" data-suffix="k" data-count=".num" data-from="0" data-to="310" data-duration="4" data-easing="false">
-                    <div class="xe-upper">
-
-                        <div class="xe-icon">
-                            <i class="fa-ban"></i>
-                        </div>
-                        <div class="xe-label">
-                            <strong class="num">20</strong>
-                            <span>Backlog</span>
-                        </div>
-
-                    </div>
-                    <div class="xe-lower">
-                        <div class="border"></div>
-
-                        <span>Backlog</span>
-                        <strong>Tickets vencidos e não resolvidos</strong>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-sm-4">
-                <div class="xe-widget xe-counter-block xe-counter-block-orange">
-                    <div class="xe-upper">
-
-                        <div class="xe-icon">
-                            <i class="fa-info-circle"></i>
-                        </div>
-                        <div class="xe-label">
-                            <strong class="num">21</strong>
-                            <span>Aging</span>
-                        </div>
-                    </div>
-                    <div class="xe-lower">
-                        <div class="border"></div>
-                        <span>Aging</span>
-                        <strong>Idade média dos tickets vencidos</strong>
-                    </div>
-                </div>
-            </div>
+            
             <div>
                 <br>
             </div>
@@ -239,7 +173,7 @@
             
         <!-- Bootstrap Core JavaScript -->
         <script src="js/bootstrap.min.js"></script>
-        <script src="js/dash.js"></script>
+        <script src="js/dashdaily.js"></script>
 
         <!-- Morris Charts JavaScript -->
         <script src="js/plugins/morris/raphael.min.js"></script>
