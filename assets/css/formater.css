@@ -1,3 +1,49 @@
+.spinnerpos {
+      position: absolute;
+      top: 50%;
+      right: 50%;
+    }
+    
+    .preloader1 {
+       width:40px;
+       height:40px;
+       display:inline-block;
+       padding:0px;
+       text-align:left;
+       -webkit-animation:preloader1 1.4s linear infinite;
+       animation:preloader1 1.4s linear infinite;
+        align-content: center;
+    }
+    .preloader1 span {
+       position:absolute;
+       vertical-align:middle;
+       border-radius:100%;
+       background:#000000;
+       display:inline-block;
+       width:8px;
+       height:8px;
+       margin-left:16px;
+       transform-origin:center 0px;
+       -webkit-transform-origin:center 20px;
+    }
+    .preloader1 span:nth-child(2) {transform: rotate(36deg);-webkit-transform: rotate(36deg); opacity:0.1;}
+    .preloader1 span:nth-child(3) {transform: rotate(72deg);-webkit-transform: rotate(72deg); opacity:0.2;}
+    .preloader1 span:nth-child(4) {transform: rotate(108deg);-webkit-transform: rotate(108deg); opacity:0.3;}
+    .preloader1 span:nth-child(5) {transform: rotate(144deg);-webkit-transform: rotate(144deg); opacity:0.4;}
+    .preloader1 span:nth-child(6) {transform: rotate(180deg);-webkit-transform: rotate(180deg); opacity:0.5;}
+    .preloader1 span:nth-child(7) {transform: rotate(216deg);-webkit-transform: rotate(216deg); opacity:0.6;}
+    .preloader1 span:nth-child(8) {transform: rotate(252deg);-webkit-transform: rotate(252deg); opacity:0.7;}
+    .preloader1 span:nth-child(9) {transform: rotate(288deg);-webkit-transform: rotate(288deg); opacity:0.8;}
+    .preloader1 span:nth-child(10) {transform: rotate(324deg);-webkit-transform: rotate(324deg); opacity:0.9;}
+    @keyframes preloader1 {
+       from {transform: rotate(0deg);}
+       to {transform: rotate(360deg);}
+    }
+    @-webkit-keyframes preloader1 {
+       from {-webkit-transform: rotate(0deg);}
+       to {-webkit-transform: rotate(360deg);}
+    }
+
 .fupper {
   background: #f7aa47;
   padding: 28px;

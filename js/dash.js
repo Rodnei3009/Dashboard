@@ -30,19 +30,15 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
 
         $scope.carregou = true;
         
-        //alert('data: ' + dat_carregar);
         myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/" + dat_carregar);
         myData.on('value', function(snapshot){
-            qtd_dias = snapshot.numChildren();        
-            snapshot.forEach(function(childSnapshot) { //para cada dia
-                    $scope.vol_acum = $scope.vol_acum + childSnapshot.numChildren();
-                    childSnapshot.forEach(function(childSnapshottkt) { //para cada ticket
-                        no_prazo = no_prazo + childSnapshottkt.child('no_prazo').val();
-                        reabertos = reabertos + childSnapshottkt.child('reaberto').val();
-                        if  (childSnapshottkt.child('vcto').val().toString().substring(0,8) === hoje) {    
-                            vcto_no_dia = vcto_no_dia + 1;
-                        }
-                    });
+            $scope.vol_acum = snapshot.numChildren(); //total de chamados        
+            snapshot.forEach(function(childSnapshot) { //para cada chamado
+                    no_prazo = no_prazo + childSnapshot.child('no_prazo').val();
+                    reabertos = reabertos + childSnapshot.child('reaberto').val();
+                    if  (childSnapshot.child('vcto').val().toString().substring(0,8) === hoje) {    
+                        vcto_no_dia = vcto_no_dia + 1;
+                    }
                     //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
             });
             $scope.$apply();
@@ -51,7 +47,7 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
             $scope.sla = sla.toFixed(1);
             $scope.reabertos = reabertos;
             $scope.vcto_no_dia = vcto_no_dia;
-            $scope.data_exibir = moment($scope.ano_mes, "YYYYMM").format('MMMM YYYY');  
+            $scope.data_exibir = moment($scope.ano_mes, "YYYYMM").format('MMMM YYYY');
         });
     };
     
