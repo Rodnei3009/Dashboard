@@ -63,6 +63,7 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
                         
             $scope.dataSourceTOP5 = $scope.dataSourceOri;
 
+            
             var dChart = $("#bar-5").dxChart("instance");
             dChart.option({ dataSource: $scope.dataSourceTOP5 });
             dChart._render();
