@@ -15,6 +15,17 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
     $scope.dataSourceOri = [];
     $scope.dataSourceTOP5 = [];
     
+    $scope.xenonPalette = ['#68b828','#7c38bc','#0e62c7','#fcd036','#4fcdfc','#00b19d','#ff6264','#f7aa47'];
+    
+    $scope.dataSourcePie = [
+        {region: "Asia", val: 4119626293},
+        {region: "Africa", val: 1012956064},
+        {region: "Northern America", val: 344124520},
+        {region: "Latin America and the Caribbean", val: 590946440},
+        {region: "Europe", val: 727082222},
+        {region: "Oceania", val: 35104756}
+    ];
+    
     $scope.ano_mes_dia = dateFilter(new Date(), 'yyyyMMdd');
     $scope.data_exibir = moment($scope.ano_mes_dia, "YYYYMMDD").format('DD MMMM YYYY');
     
@@ -177,6 +188,35 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
     //TOP 5 Sistemas
     //=============================================================================================================
 
+    $("#bar-10").dxPieChart({
+        dataSource: $scope.dataSourcePie,
+        title: "Top 5 Categorias",
+        tooltip: {
+            enabled: false,
+            format:"millions",
+            customizeText: function() { 
+                return this.argumentText + "<br/>" + this.valueText;
+            }
+        },
+        size: {
+            height: 420
+        },
+        pointClick: function(point) {
+            point.showTooltip();
+            clearTimeout(timer);
+            timer = setTimeout(function() { point.hideTooltip(); }, 2000);
+            $("select option:contains(" + point.argument + ")").prop("selected", true);
+        },
+        legend: {
+            visible: false
+        },  
+        series: [{
+            type: "doughnut",
+            argumentField: "region"
+        }],
+        palette: $scope.xenonPalette
+    });
+    
 });
 
 

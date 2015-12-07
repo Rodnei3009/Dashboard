@@ -23,7 +23,7 @@
 	
     <link rel="stylesheet" href="assets/css/xenon-skins.css">
 	<link rel="stylesheet" href="assets/css/custom.css">
-	<script src="assets/js/jquery-1.11.1.min.js"></script>
+	<script src="js/jquery-1.11.1.min.js"></script>
 
     <link href="assets/css/morris.css" rel="stylesheet">
     
@@ -83,7 +83,11 @@
             </div>
         </div>    
         
-        <div ng-hide="carregou" >
+        <!--
+        <div ng-hide="carregou" > parei aqui. sem o ng-hide funciona
+        -->
+    
+        <div ng-hide="carregou">
             
             <div class="block-center text-center align-center col-sm-12">
                 <h3>
@@ -166,10 +170,18 @@
                 </div>
             </div>
             
+            <div class="col-sm-6">
+                <div class="xe-widget xe-counter-block xe-counter-block-white">
+                    <div id="bar-10"></div>    
+                </div>
+            </div>
+
             <div>
                 <br>
             </div>
         </div>
+    
+        
     
         <!-- Bootstrap Core JavaScript -->
         <script src="js/bootstrap.min.js"></script>
