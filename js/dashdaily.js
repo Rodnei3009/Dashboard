@@ -219,10 +219,10 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
                 return this.argumentText + "<br/>" + this.valueText;
             }
         },
-        size: {
+        /*size: {
             height: 420
         },
-        /*pointClick: function(point) {
+        pointClick: function(point) {
             point.showTooltip();
             clearTimeout(timer);
             timer = setTimeout(function() { point.hideTooltip(); }, 2000);
