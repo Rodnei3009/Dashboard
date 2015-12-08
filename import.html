@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+  
+    <script src="js/papaparse.min.js"></script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+    
+    <script src="./papaparse.min.js"></script>
+    <script src="./jquery-2.1.1.min.js"></script>
+    
+    <script>
+      var data;
+     
+      function handleFileSelect(evt) {
+        var file = evt.target.files[0];
+     
+        Papa.parse(file, {
+          header: true,
+          dynamicTyping: true,
+          complete: function(results) {
+            data = results;
+          }
+        });
+      }
+     
+      $(document).ready(function(){
+        $("#csv-file").change(handleFileSelect);
+      });
+    </script>
+
+</head>
+<body>
+
+        <div>
+            <button type="button" class="btn ng-click="before()">Importar</button>
+            <input type="file" id="csv-file" name="files"/>
+        </div>
+    
+</body>
+</html>
