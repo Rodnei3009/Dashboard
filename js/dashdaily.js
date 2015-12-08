@@ -14,18 +14,11 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
     
     $scope.dataSourceOri = [];
     $scope.dataSourceTOP5 = [];
+    $scope.dataSourceCateg = [];
+
     
     $scope.xenonPalette = ['#68b828','#7c38bc','#0e62c7','#fcd036','#4fcdfc','#00b19d','#ff6264','#f7aa47'];
-    
-    $scope.dataSourcePie = [
-        {region: "Asia", val: 4119626293},
-        {region: "Africa", val: 1012956064},
-        {region: "Northern America", val: 344124520},
-        {region: "Latin America and the Caribbean", val: 590946440},
-        {region: "Europe", val: 727082222},
-        {region: "Oceania", val: 35104756}
-    ];
-    
+        
     $scope.ano_mes_dia = dateFilter(new Date(), 'yyyyMMdd');
     $scope.data_exibir = moment($scope.ano_mes_dia, "YYYYMMDD").format('DD MMMM YYYY');
     
@@ -59,6 +52,7 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
             
             $scope.dataSourceOri = [];
             $scope.dataSourceTOP5 = [];
+            $scope.dataSourceCateg = [];
             
             snapshot.forEach(function(childSnapshot) { //para cada chamado
 
@@ -72,6 +66,7 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
                         }                        
                                                 
                         $scope.dataSourceOri.push({sistema: childSnapshot.child('sistema').val().toString().substring(0,8), vol: 1});    
+                        $scope.dataSourceCateg.push({categoria: childSnapshot.child('categoria').val(), val: 1});
                         
                         sla =  no_prazo / $scope.vol_acum * 100;
                         $scope.sla = sla.toFixed(1);
@@ -80,19 +75,16 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
                     }
                     //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
             });            
-                        
-            var ordenado = groupBySistema($scope.dataSourceOri);            
             
-            var dataNovo = new DevExpress.data.DataSource(ordenado);
-            
-            dataNovo.load().done(function(result) {
-
-            });
-            
-            
+            $scope.dataSourceOri = groupBySistema($scope.dataSourceOri);            
             var dChart = $("#bar-5").dxChart("instance");
-            dChart.option({ dataSource: ordenado });
+            dChart.option({ dataSource: $scope.dataSourceOri });
             dChart._render();
+            
+            $scope.dataSourceCateg = groupByCateg($scope.dataSourceCateg);
+            var dChartCateg = $("#bar-10").dxPieChart("instance");
+            dChartCateg.option({ dataSource: $scope.dataSourceCateg });
+            dChartCateg._render();
 
             $scope.$apply();
             $scope.carregou = false;
@@ -154,6 +146,37 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
         }
     };
     
+    
+    function groupByCateg(data) {
+        
+        var result = [];
+        var cont = 0;
+        var encontrou = 0;
+        
+        for	(i = 0; i < data.length; i++) {
+            if(cont === 0){
+                result.push({categoria: data[i].categoria, val: data[i].val});
+                cont = 1;
+            } else {
+                //$scope.currentTime = data[i].sistema;
+                encontrou = 0;
+                for	(j = 0; j < result.length; j++) {
+                    if(data[i].categoria === result[j].categoria) {
+                        result[j].val = result[j].val + data[i].val;
+                        //$scope.currentTime = data[i].sistema + ' - ' + result[j].sistema;
+                        //return result;
+                        encontrou = 1;
+                    }
+                }
+                if(encontrou === 0){
+                    result.push({categoria: data[i].categoria, val: data[i].val});
+                }
+            }            
+        }     
+        //result.sort(sortArray);
+        return result;
+    };
+    
     //TOP 5 Sistemas
     //=============================================================================================================    
     $("#bar-5").dxChart({
@@ -175,8 +198,7 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
             text: "Top 5 sistemas"
         },
         legend: {
-            verticalAlignment: "bottom",
-            horizontalAlignment: "center"
+            visible: false
         },
         pointClick: function(point) {
             point.isSelected() ? point.clearSelection() : point.select();
@@ -187,13 +209,12 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
     });
     //TOP 5 Sistemas
     //=============================================================================================================
-
+    
     $("#bar-10").dxPieChart({
-        dataSource: $scope.dataSourcePie,
+        dataSource: $scope.dataSourceCateg,
         title: "Top 5 Categorias",
         tooltip: {
-            enabled: false,
-            format:"millions",
+            enabled: true,
             customizeText: function() { 
                 return this.argumentText + "<br/>" + this.valueText;
             }
@@ -201,24 +222,28 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
         size: {
             height: 420
         },
-        pointClick: function(point) {
+        /*pointClick: function(point) {
             point.showTooltip();
             clearTimeout(timer);
             timer = setTimeout(function() { point.hideTooltip(); }, 2000);
             $("select option:contains(" + point.argument + ")").prop("selected", true);
-        },
+        },*/
         legend: {
             visible: false
         },  
         series: [{
             type: "doughnut",
-            argumentField: "region"
+            argumentField: "categoria"
+            /*label: {
+                position: "inside",
+                visible: true,
+                format: "largeNumber",
+                font: {
+                    size: 14
+                }
+            }*/
         }],
         palette: $scope.xenonPalette
     });
     
 });
-
-
-
-
