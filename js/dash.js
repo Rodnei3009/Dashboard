@@ -34,8 +34,8 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
         myData.on('value', function(snapshot){
             $scope.vol_acum = snapshot.numChildren(); //total de chamados        
             snapshot.forEach(function(childSnapshot) { //para cada chamado
-                    no_prazo = no_prazo + childSnapshot.child('no_prazo').val();
-                    reabertos = reabertos + childSnapshot.child('reaberto').val();
+                    no_prazo = no_prazo + Number(childSnapshot.child('no_prazo').val());
+                    reabertos = reabertos + Number(childSnapshot.child('reaberto').val());
                     if  (childSnapshot.child('vcto').val().toString().substring(0,8) === hoje) {    
                         vcto_no_dia = vcto_no_dia + 1;
                     }
