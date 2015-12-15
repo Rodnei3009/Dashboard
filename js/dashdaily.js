@@ -192,7 +192,18 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
             }
         },
         series: [
-            { valueField: "vol", name: "Volume", color: "#ffd700" }
+            {   valueField: "vol", 
+                name: "Volume", 
+                color: "#ffd700"
+                /*label: {
+                    position: "inside",
+                    visible: true,
+                    format: "largeNumber",
+                    font: {
+                        size: 10
+                    }
+                }*/   
+            }
         ],
         title: {
             text: "Top 5 sistemas"
@@ -213,7 +224,7 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
     $("#bar-10").dxPieChart({
         dataSource: $scope.dataSourceCateg,
         title: "Top 5 Categorias",
-        tooltip: {
+        /*tooltip: {
             enabled: true,
             customizeText: function() { 
                 return this.argumentText + "<br/>" + this.valueText;
@@ -229,21 +240,156 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
             $("select option:contains(" + point.argument + ")").prop("selected", true);
         },*/
         legend: {
-            visible: false
+            visible: true,
+            horizontalAlignment: "center"
         },  
         series: [{
             type: "doughnut",
-            argumentField: "categoria"
-            /*label: {
+            argumentField: "categoria",
+            label: {
                 position: "inside",
                 visible: true,
                 format: "largeNumber",
                 font: {
                     size: 14
                 }
-            }*/
+            }
         }],
         palette: $scope.xenonPalette
     });
+    
+    
+    //===========Teste Novo Grafico Vol vs SLA============
+    
+    var dataSourceVolSLA = [{
+        month: "January",
+        avgT: 9.8,
+        minT: 4.1,
+        maxT: 15.5,
+        prec: 109
+    }, {
+        month: "February",
+        avgT: 11.8,
+        minT: 5.8,
+        maxT: 17.8,
+        prec: 104
+    }, {
+        month: "March",
+        avgT: 13.4,
+        minT: 7.2,
+        maxT: 19.6,
+        prec: 92
+    }, {
+        month: "April",
+        avgT: 15.4,
+        minT: 8.1,
+        maxT: 22.8,
+        prec: 80
+    }, {
+        month: "May",
+        avgT: 18,
+        minT: 10.3,
+        maxT: 25.7,
+        prec: 70
+    }, {
+        month: "June",
+        avgT: 20.6,
+        minT: 12.2,
+        maxT: 29,
+        prec: 60
+    }, {
+        month: "July",
+        avgT: 22.2,
+        minT: 13.2,
+        maxT: 31.3,
+        prec: 70
+    }, {
+        month: "August",
+        avgT: 22.2,
+        minT: 13.2,
+        maxT: 31.1,
+        prec: 90
+    }, {
+        month: "September",
+        avgT: 21.2,
+        minT: 12.4,
+        maxT: 29.9,
+        prec: 80
+    }, {
+        month: "October",
+        avgT: 17.9,
+        minT: 9.7,
+        maxT: 26.1,
+        prec: 101
+    }, {
+        month: "November",
+        avgT: 12.9,
+        minT: 6.2,
+        maxT: 19.6,
+        prec: 64
+    }, {
+        month: "December",
+        avgT: 9.6,
+        minT: 3.4,
+        maxT: 15.7,
+        prec: 76
+    }];
+    
+    $("#volsla").dxChart({
+        dataSource: dataSourceVolSLA,
+        commonSeriesSettings:{
+            argumentField: "month"
+        },
+        panes: [{
+                name: "topPane"
+            }, {
+                name: "bottomPane"
+            }],
+        defaultPane: "bottomPane",
+        series: [{
+                pane: "topPane", 
+                valueField: "avgT",
+                name: "SLA",
+                label: {
+                    visible: false
+                    //customizeText: function (){
+                    //    return this.valueText + " %";
+                    //}
+                }
+            }, {
+                type: "bar",
+                valueField: "prec",
+                name: "Volume",
+                label: {
+                    visible: true,
+                    position: "inside",
+                    customizeText: function (){
+                        return this.valueText  + "";
+                    }
+                }
+            }
+        ],    
+        valueAxis: [{
+            pane: "bottomPane",
+            grid: {
+                visible: true
+            }
+        }, {
+            pane: "topPane",
+            min: 0,
+            max: 30,
+            grid: {
+                visible: true
+            }
+        }],
+        legend: {
+            verticalAlignment: "bottom",
+            horizontalAlignment: "center"
+        },
+        title: {
+            text: "Volume vs SLA"
+        }
+    });
+    
     
 });

@@ -1,19 +1,20 @@
 
-var fs = require('fs');
-var parse = require('csv-parse');
-var moment = require('moment');
+var fs      = require('fs');
+var parse   = require('csv-parse');
+var moment  = require('moment');
 
-var arrayMeses = [];
-var mesProcessar = [];
-var totalLinhas = 0;
+var arrayMeses      = [];
+var mesProcessar    = [];
+var diaProcessar    = [];
+var totalLinhas     = 0;
 
-var mes         = ""
-var registro    = {};
+var mes             = "";
+var registro        = {};
+var reg_info_mes    = {};
 
-var Firebase = require('firebase');
-var dataRef = new Firebase('https://itdashboard.firebaseio.com/ambev/volpi/');
+var Firebase    = require('firebase');
+var dataRef     = new Firebase('https://itdashboard.firebaseio.com/ambev/volpi/');
 var dataRefresh = new Firebase('https://itdashboard.firebaseio.com/ambev/volpi/');
-
 
 var parser = parse({delimiter: ';'}, function(err, data){
     
@@ -39,8 +40,14 @@ var parser = parse({delimiter: ';'}, function(err, data){
             
             console.log('Processando mês: ' + arrayMeses[j] + ' com ' + mesProcessar.length + ' registros');
             
-            //====================GRAVA DADOS===============================
+            vol_mes         = 0;
+            vol_noprazo_mes = 0;
+            vol_reabeto_mes = 0;
+            sla_mes         = 0;
+            
+            //====================GRAVA DADOS POR DIA===============================
             for(i=0;i<mesProcessar.length;i++){
+                dia             = "d" + mesProcessar[i][2].substring(0,8);
                 chamado         = mesProcessar[i][1];
                 abertura        = mesProcessar[i][2];
                 categoria       = mesProcessar[i][3];
@@ -49,7 +56,12 @@ var parser = parse({delimiter: ';'}, function(err, data){
                 reaberto        = mesProcessar[i][6];
                 sistema         = mesProcessar[i][7];
                 vcto            = mesProcessar[i][8];
-                cont = 0;
+                                
+                cont            = 0;                
+                
+                vol_mes         = vol_mes + 1;
+                vol_noprazo_mes = vol_noprazo_mes + Number(no_prazo);
+                vol_reabeto_mes = vol_reabeto_mes + Number(reaberto);
                 
                 registro = {abertura:       abertura, 
                             categoria:      categoria, 
@@ -59,7 +71,7 @@ var parser = parse({delimiter: ';'}, function(err, data){
                             sistema:        sistema, 
                             vcto:           vcto};
                 
-                dataRef.child(arrayMeses[j]).child(chamado).set(registro, function (erro){        
+                dataRef.child(arrayMeses[j]).child(dia).child(chamado).set(registro, function (erro){        
                     if(erro){
                         console.log ('Ocorreu um erro...' + erro);
                         process.exit(1);
@@ -73,7 +85,8 @@ var parser = parse({delimiter: ';'}, function(err, data){
                         }
                     }
                 });
-                
+
+                dia             = "";
                 chamado         = "";
                 abertura        = "";
                 categoria       = "";
@@ -82,8 +95,19 @@ var parser = parse({delimiter: ';'}, function(err, data){
                 reaberto        = "";
                 sistema         = "";
                 vcto            = "";
+                
             }
+                        
+            //==========GRAVA INFOS CONSOLIDADAS NO MES============
+            reg_info_mes = {vol_mes:                vol_mes,
+                            vol_reabeto_mes:        vol_reabeto_mes, 
+                            sla_mes:                (vol_noprazo_mes / vol_mes) * 100};
+            
+            dataRef.child(arrayMeses[j]).update(reg_info_mes, function (erro){        
+
+            });
             //====================GRAVA DADOS===============================
+            
         }
         //======PARA CADA MES===========
     }
@@ -144,6 +168,18 @@ function gravaDados(mes, data) {
         sistema         = "";
         vcto            = "";
     }
+};
+
+function filtraDia(coluna, filtro, data) {
+    var result = [];
+    //console.log('entrou filtra. coluna=' + coluna + ' filtro=' + filtro);
+    for	(i = 0; i < data.length; i++) {
+        if(data[i][coluna].substring(0,8) === filtro){
+            result.push(data[i]);
+            //console.log('registro ' + data[i]);
+        }            
+    }
+    return result;
 };
 
 function filtraArray(coluna, filtro, data) {
