@@ -26,7 +26,7 @@ var parser = parse({delimiter: ';'}, function(err, data){
         
         //======SEPARA OS MESES A SEREM PROCESSADOS===========
         arrayMeses = groupByMonth(data);
-
+        
         //======PARA CADA MES===========
         for(j=0;j<arrayMeses.length;j++){
             
@@ -227,3 +227,4 @@ function groupByMonth(data) {
 };
 
 
+//
