@@ -47,33 +47,32 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
 
         $scope.carregou = true;
         
-        myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/" + dat_carregar.substring(0,6));
+        myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/" + dat_carregar.substring(0,6) + "/d" + $scope.ano_mes_dia);
         myData.on('value', function(snapshot){
+            
+        myDataChamados = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/" + dat_carregar.substring(0,6) + "/d" + $scope.ano_mes_dia + "/chamados");
+        myDataChamados.on('value', function(snapshotChamados){    
             
             $scope.dataSourceOri = [];
             $scope.dataSourceTOP5 = [];
             $scope.dataSourceCateg = [];
             
-            snapshot.forEach(function(childSnapshot) { //para cada chamado
+            //$scope.sla          = snapshot.child('sla').val().toFixed(1);
+            $scope.abertos      = snapshot.child('abertos').val();
+            $scope.encerrados   = snapshot.child('encerrados').val();
+            $scope.previstos    = snapshot.child('previstos').val();
+            $scope.no_prazo     = snapshot.child('no_prazo').val();
+            $scope.reabertos    = snapshot.child('reabertos').val();                
+            
+            snapshotChamados.forEach(function(childSnapshotChamados) { //para cada chamado
 
-                    if (childSnapshot.child('abertura').val().toString().substring(0,8) === $scope.ano_mes_dia) {
-                        
-                        $scope.vol_acum = $scope.vol_acum + 1;
-                        no_prazo = no_prazo + Number(childSnapshot.child('no_prazo').val());
-                        reabertos = reabertos + Number(childSnapshot.child('reaberto').val());
-                        if  (childSnapshot.child('vcto').val().toString().substring(0,8) === hoje) {    
-                            vcto_no_dia = vcto_no_dia + 1;
-                        }                        
+                    if (childSnapshotChamados.child('abertura').val().toString().substring(0,8) === $scope.ano_mes_dia) {                    
                                                 
-                        $scope.dataSourceOri.push({sistema: childSnapshot.child('sistema').val().toString().substring(0,8), vol: 1});    
-                        $scope.dataSourceCateg.push({categoria: childSnapshot.child('categoria').val(), val: 1});
-                        
-                        sla =  no_prazo / $scope.vol_acum * 100;
-                        $scope.sla = sla.toFixed(1);
-                        $scope.reabertos = reabertos;
-                        $scope.vcto_no_dia = vcto_no_dia;
+                        $scope.dataSourceOri.push({sistema: childSnapshotChamados.child('sistema').val().toString().substring(0,8), vol: 1});    
+                        $scope.dataSourceCateg.push({categoria: childSnapshotChamados.child('categoria').val(), val: 1});
+
                     }
-                    //$scope.produtos.push({'ID': childSnapshot.key(), 'descricao': childSnapshot.child('descricao').val(), 'categoria': childSnapshot.child('categoria').val(), 'status': childSnapshot.child('status').val()});
+
             });            
             
             $scope.dataSourceOri = groupBySistema($scope.dataSourceOri);            
@@ -91,6 +90,8 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
 
             $scope.data_exibir = moment($scope.ano_mes_dia, "YYYYMMDD").format('DD MMMM YYYY');
         });
+            
+        });    
     };
     
     $scope.before = function() {

@@ -129,7 +129,7 @@
                             <i class="fa-line-chart"></i>
                         </div>
                         <div class="xe-label">
-                            <strong class="num">{{vol_acum}}</strong>
+                            <strong class="num">{{abertos}}</strong>
                             <span>Volume de tickets abertos</span>
                         </div>
 
@@ -163,6 +163,75 @@
                     </div>
                 </div>
             </div>
+            
+                        <div class="col-sm-4">
+
+                <div class="xe-widget xe-counter-block xe-counter-block-yellow" data-count=".num" data-from="0" data-to="512" data-duration="3">
+                    <div class="xe-upper">
+
+                        <div class="xe-icon">
+                            <i class="linecons-attach"></i>
+                        </div>
+                        <div class="xe-label">
+                            <strong class="num">{{encerrados}}</strong>
+                            <span>Tickets encerrados no dia</span>
+                        </div>
+
+                    </div>
+                    <div class="xe-lower">
+                        <div class="border"></div>
+
+                        <span>Informação</span>
+                        <strong>Volume de tickets encerrados no dia</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+
+                <div class="xe-widget xe-counter-block xe-counter-block-blue" data-suffix="k" data-count=".num" data-from="0" data-to="310" data-duration="4" data-easing="false">
+                    <div class="xe-upper">
+
+                        <div class="xe-icon">
+                            <i class="fa-ban"></i>
+                        </div>
+                        <div class="xe-label">
+                            <strong class="num">{{previstos}}</strong>
+                            <span>Volume de tickets com vencimento no dia</span>
+                        </div>
+
+                    </div>
+                    <div class="xe-lower">
+                        <div class="border"></div>
+
+                        <span>Informação</span>
+                        <strong>Tickets com vencimento previsto no dia</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+                <div class="xe-widget xe-counter-block xe-counter-block-orange">
+                    <div class="xe-upper">
+
+                        <div class="xe-icon">
+                            <i class="fa-info-circle"></i>
+                        </div>
+                        <div class="xe-label">
+                            <strong class="num">{{no_prazo}}</strong>
+                            <span>Volume de tickets encerrados no prazo</span>
+                        </div>
+                    </div>
+                    <div class="xe-lower">
+                        <div class="border"></div>
+                        <span>Informação</span>
+                        <strong>Tickets encerrados no dia e dentro do prazo</strong>
+                    </div>
+                </div>
+            </div>
+
             
             <div class="col-sm-6">
                 <div class="xe-widget xe-counter-block xe-counter-block-white">

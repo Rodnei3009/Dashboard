@@ -23,7 +23,7 @@ var parser = parse({delimiter: ';'}, function (err, data) {
     
     //=======================
     for(j=0;j<data.length;j++){
-        
+
         updateVolAbertos(data[j][2]);
         
         updateVolEncerrados(data[j][4]);
@@ -35,32 +35,15 @@ var parser = parse({delimiter: ';'}, function (err, data) {
         updateVolReaberto(data[j][8], data[j][6]);
         
         //SLA = total c. vecto no mes - vencidos (abertos e já fechados - sempre olhando prev de vecto) / total c. vecto no mes   
-    
     }
     
     updateSLA();
 
     gravaDadosMensais();
     
+    gravaDadosDia(data);
+    
     //=============PROCESSA DADOS DIÁRIOS===============
-    for(x=0;x<arrayMeses.length;x++){
-        
-        console.log(arrayMeses[x].mes);
-        
-        mesProcessar = filtraArray(0, arrayMeses[x].mes, data)
-        
-        arrayDias = consolidaDadosDia(mesProcessar);
-        
-        for (g=0;g<arrayDias.length;g++) {
-            
-            updateVolAbertosDia(arrayDias[g].dia);
-            
-            console.log(arrayDias[g].dia);
-            
-        }
-        
-        
-    }
     
 });
 
@@ -70,7 +53,7 @@ function gravaDadosMensais (abertura){
     
     var totalLinhas = arrayMeses.length;
     var registro    = {};
-    var cont        = 0;
+    //var cont        = 0;
     
     for (h=0;h<arrayMeses.length;h++){
         
@@ -85,12 +68,12 @@ function gravaDadosMensais (abertura){
             if(erro){
                 console.log ('Ocorreu um erro...' + erro);
             } else {
-                console.log ('cont '+ cont);                        
-                cont = cont + 1;
-                if (cont === totalLinhas) {
+                //console.log ('cont '+ cont);                        
+                //cont = cont + 1;
+                //if (cont === totalLinhas) {
                     //console.log ('saindo....');
-                    process.exit(0);
-                }
+                    //process.exit(0);
+                //}
             }
         });    
         
@@ -177,15 +160,59 @@ function groupByMonth(data) {
 //==========================PROCESSA DADOS MENSAIS===================================
 
 //==========================PROCESSA DADOS DIARIOS===================================
-function updateVolAbertosDia (abertura){
-    for (h=0;h<arrayDias.length;h++){
+
+
+function gravaDadosDia (data) {
+    
+    for(i=0;i<data.length;i++){
         
-        if (arrayDias[h].dia === abertura){
-            console.log('ABERTURA dia ' + arrayDias[h].dia + ' volume ' + arrayDias[h].abertos);    
-            arrayDias[h].abertos = Number(arrayDias[h].abertos) + 1;
-        }
+        mes             = data[i][0]; 
+        chamado         = data[i][1];
+        abertura        = data[i][2];
+        categoria       = data[i][3];
+        encerramento    = data[i][4];
+        no_prazo        = data[i][5];
+        reaberto        = data[i][6];
+        sistema         = data[i][7];
+        vcto            = data[i][8];
+        
+        var cont        = 0;
+        
+        registro = {abertura: abertura, categoria: categoria, encerramento: encerramento, no_prazo: Number(no_prazo), reaberto: Number(reaberto), sistema: sistema, vcto:vcto};
+        
+        //console.log('gravando mês: ' + mes + ' chamado: ' + chamado + ' registro: ' + registro.abertura);
+        
+        dataRef.child(mes).child(chamado).set(registro, function (erro){
+            if(erro){
+                console.log ('Ocorreu um erro...' + erro);
+                
+                //cont = cont + 1;
+                //if (cont === totalLinhas) {
+                //    process.exit(1);
+                //}
+            } else {
+                console.log ('cont '+ cont);                        
+                cont = cont + 1;
+                if (cont === totalLinhas) {
+                    console.log ('saindo....');
+                    process.exit(0);
+                }
+            }
+        });
+        
+        console.log(i);
+        mes             = "";
+        chamado         = "";
+        abertura        = "";
+        categoria       = "";
+        encerramento    = "";
+        no_prazo        = "";
+        reaberto        = "";
+        sistema         = "";
+        vcto            = "";
     }
-}
+    
+};
 
 //==========================PROCESSA DADOS DIARIOS===================================
 
