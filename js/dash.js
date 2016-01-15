@@ -24,17 +24,23 @@ myApp.controller('dashitems', function($scope, $interval, dateFilter) {
         myData = new Firebase("https://itdashboard.firebaseio.com/ambev/volpi/" + dat_carregar);
         myData.once('value', function(snapshot){
             
-            $scope.sla          = snapshot.child('sla').val().toFixed(1);
-            $scope.abertos      = snapshot.child('abertos').val();
-            $scope.encerrados   = snapshot.child('encerrados').val();
-            $scope.previstos    = snapshot.child('previstos').val();
-            $scope.no_prazo     = snapshot.child('no_prazo').val();
-            $scope.reabertos    = snapshot.child('reabertos').val();
+            if (snapshot.exists()) {
+                $scope.sla          = snapshot.child('sla').val().toFixed(1);
+                $scope.abertos      = snapshot.child('abertos').val();
+                $scope.encerrados   = snapshot.child('encerrados').val();
+                $scope.previstos    = snapshot.child('previstos').val();
+                $scope.no_prazo     = snapshot.child('no_prazo').val();
+                $scope.reabertos    = snapshot.child('reabertos').val();
+
+                $scope.$apply();
+                $scope.carregou = false;
+
+                $scope.data_exibir = moment($scope.ano_mes, "YYYYMM").format('MMMM YYYY');
+            } else {
+                $scope.carregou = false;
+            }
             
-            $scope.$apply();
-            $scope.carregou = false;
             
-            $scope.data_exibir = moment($scope.ano_mes, "YYYYMM").format('MMMM YYYY');
             
         });
     };
